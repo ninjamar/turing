@@ -1,0 +1,14 @@
+nested Loops
+++++++++++ main counter
+>++^ add jump if not equal 0 to stack
+!<  clear and move back to counter
+[ loop on main counter
+    $ print current cell
+    >+++++ inner loop counter
+    >++^!< add jump if not equal 0 to stack
+    [ loop on inner counter
+        $- print cell and decrement
+    ] 
+    < go back to main counter
+    - decrement
+]

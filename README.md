@@ -9,22 +9,23 @@ A bunch of cells that can be manipulated. [I wrote an interpreter for this in Sc
 | `<` | Shift the current cell one to the left
 | `+` | Increment the current cell
 | `-` | Decrement the current cell
-| `^` | Push the current cell to the stack
+| `^` | Push the current cell to the stack (keeps value in current cell)
 | `\|` | Pop from the stack to the current cell
 | `,` | Pop from the stack to the current cell and subtract
 | `.` | Pop from the stack to the current cell and add
+| `%` | Jump to cell specified in stack
 | `*` | Clear the stack
 | `!` | Clear the current cell
 | `$` | Output the current cell
 
-## `@` Jump
+## `@` Compare +/Jump
 - Runs a comparison against the current cell
 - Inputs are given on the stack
-- Standalone
-    - Inputs required, `[flag, cell location if true, cell location if false]`
+- Standalone (Compare then Jump)
+    - Inputs required, `[flag, numerical label if true, numerical label if false]`
     - With the true and false conditions, this is an if-else
     - With only the true condition, this is an if
-- As part of a loop
+- As part of a loop (Compare)
     - Inputs required, `[flag]`
     - Run before first iteration of the loop
 - Flags
@@ -40,7 +41,7 @@ A bunch of cells that can be manipulated. [I wrote an interpreter for this in Sc
 
 ## `[...]` Loops
 - Setup comparison on stack before loop is run
-- The jump instruction doesn't require cell locations since it will jump back to the begininng of the loop
+- The comp instruction doesn't require cell locations since it will jump back to the begininng of the loop
 - The comparison is run before the body is executed (like a do while)
 - **The ending cell will still be used for the comparison**
 

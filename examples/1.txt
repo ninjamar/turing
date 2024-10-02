@@ -1,0 +1,39 @@
+If-else example
+    Subtract cell 2 from cell 1, so cell 1 = 4 - 3
+    ++++>+++^<,
+
+    Add flag 6 (j if less than or equals 0)
+    >>++++++^
+    Add the label 1 and label 2 for the comparison
+    !+^!++^
+
+    True
+        (1:
+            Print 2
+            >++$
+        )
+    False
+        (2:
+            Print 1
+            >+++$
+        )
+    Jump to labels 1 if curr cell less than or equals zero 0 else jump to label 2
+    @
+
+Shift two cells right, add 10 top it
+Add flag 2 to the stack
+Then run a loop
+Loop
+    Setup counter
+    >>++++++++++
+    Flag 2, jump if != 0
+    >++^
+    Move back to counter
+    <
+    [
+        Print counter and decrement cell
+        $-
+    ]
+
+
+++++>+++^<,* >>++++++^!+^!++^(1:>++$)(2:>+++$)@
