@@ -1,0 +1,11 @@
+construct 30 by 3 x 10
+30 will end up in the first cell
+>+++ counter cell
+>++^ JNE 0
+<
+[
+    < go back to result cell
+    ++++++++++ increment by 10
+    > go to the counter cell
+    - decrement
+]

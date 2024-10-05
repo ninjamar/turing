@@ -18,13 +18,12 @@ A bunch of cells that can be manipulated. [I wrote an interpreter for this in Sc
 | `!` | Clear the current cell
 | `$` | Output the current cell
 
-## `@` Compare +/Jump
+## `@` Jump/Loop Flags
 - Runs a comparison against the current cell
 - Inputs are given on the stack
 - Standalone (Compare then Jump)
     - Inputs required, `[flag, numerical label if true, numerical label if false]`
-    - With the true and false conditions, this is an if-else
-    - With only the true condition, this is an if
+    - If the "if false" condition is -1, then this becomes an if not an if-else
 - As part of a loop (Compare)
     - Inputs required, `[flag]`
     - Run before first iteration of the loop
@@ -38,6 +37,10 @@ A bunch of cells that can be manipulated. [I wrote an interpreter for this in Sc
     | 4 | Jump if greater than or equal zero
     | 5 | Jump if less than zero
     | 6 | Jump if less than or equal zero
+
+## `(n:...)` Labels
+- This is a jump point for the jump instruction
+- The name of the label is specified as `n`, where `n` is numerical
 
 ## `[...]` Loops
 - Setup comparison on stack before loop is run

@@ -1,4 +1,4 @@
-nested Loops
+nested loops
 ++++++++++ main counter
 >++^ add jump if not equal 0 to stack
 !<  clear and move back to counter
