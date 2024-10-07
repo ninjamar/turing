@@ -1,4 +1,8 @@
 # I adapted the inital version of this code from my scratch project (https://scratch.mit.edu/projects/1074402996/)
+
+def strip_code(code):
+    return "".join([i for i in code if i in "><+-^|,.%*!$@[]()"])
+
 class Stack:
     def __init__(self):
         self.s = []
@@ -17,28 +21,32 @@ class Stack:
 
 
 class Machine:
-    def __init__(self, code, memsize=10000):
-        self.code = code
+    def __init__(self, code, memsize=10000, debug=False):
+        if debug:
+            # This could be default behavior
+            self.code = strip_code(code)
+        else:
+            self.code = code
+        
+        self.cells = [0] * memsize
 
         self.stack = Stack()
-
         self.output = []
+
         self.loops = []
         self.labels = {}  # name: code
 
-        self.cells = [0] * memsize
-
         self.curr_cell_idx = 0
-
         self.pc = 0
 
     @property
     def curr_cell_v(self):
         return self.cells[self.curr_cell_idx]  # 0 indexed vs. 1 indexed
-
-    def replace_curr_cell(self, value):
+    
+    @curr_cell_v.setter
+    def curr_cell_v(self, value):
         self.cells[self.curr_cell_idx] = value
-
+    
     @property
     def curr_instr(self):
         return self.code[self.pc]
@@ -134,23 +142,24 @@ class Machine:
             elif instr == "<":
                 self.curr_cell_idx -= 1
             elif instr == "%":
+                # Cells are zero-indexed
                 self.curr_cell_idx = self.stack.pop()
             elif instr == "+":
-                self.replace_curr_cell(self.curr_cell_v + 1)
+                self.curr_cell_v = self.curr_cell_v + 1
             elif instr == "-":
-                self.replace_curr_cell(self.curr_cell_v - 1)
+                self.curr_cell_v = self.curr_cell_v - 1
             elif instr == "^":
                 self.stack.push(self.curr_cell_v)
             elif instr == "|":
-                self.replace_curr_cell(self.stack.pop())
+                self.curr_cell_v = self.stack.pop()
             elif instr == ",":
-                self.replace_curr_cell(self.curr_cell_v - self.stack.pop())
+                self.curr_cell_v = self.curr_cell_v - self.stack.pop()
             elif instr == ".":
-                self.replace_curr_cell(self.curr_cell_v + self.stack.pop())
+                self.curr_cell_v = self.curr_cell_v + self.stack.pop()
             elif instr == "*":
                 self.stack.clear()
             elif instr == "!":
-                self.replace_curr_cell(0)
+                self.curr_cell_v = 0
             elif instr == "$":
                 self.output.append(self.curr_cell_v)
             self.pc += 1  # Normal control flow of PC
