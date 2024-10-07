@@ -76,6 +76,7 @@ class Machine:
                 label_name = label_name + self.curr_instr
                 self.pc += 1
 
+            self.pc += 1
             label_code = ""
             while self.curr_instr != ")":
                 label_code = label_code + self.curr_instr
@@ -118,7 +119,9 @@ class Machine:
 
         elif instr == "@":
             old_pc = self.pc + 1
+            # Up here for clarity
             self.pc = 0
+
             false_cond = self.stack.pop()
             true_cond = self.stack.pop()
             flag = self.stack.pop()
@@ -132,10 +135,16 @@ class Machine:
                     label_code = self.labels[false_cond]
 
             if label_code != "":
-                # Since pc is now zero indexed, it is < not <=
-                while self.pc < len(label_code):
-                    self.exec_instr(label_code[self.pc])
 
+                # "[" requires a look at self.code
+                # The label needs to be run in the same context as the rest of the code
+                # So this is the only way I can do it
+                # This was super painful to debug
+                normal_code = self.code
+                self.code = label_code
+                # Run loop using old pc
+                self.run()
+                self.code = normal_code
             self.pc = old_pc
 
         else:
@@ -164,6 +173,9 @@ class Machine:
                 self.curr_cell_v = 0
             elif instr == "$":
                 self.output.append(self.curr_cell_v)
+            elif instr == "#":
+                self.stack.push(self.curr_cell_idx)
+
             self.pc += 1  # Normal control flow of PC
 
     def run(self):

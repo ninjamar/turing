@@ -20,6 +20,7 @@ There is a tape that can be manipulated. Each program starts at cell 0.
 | `*` | Clear the stack
 | `!` | Clear the current cell
 | `$` | Output the current cell
+| `#` | Push the current cell index to the stack
 
 ## `@` Jump/Loop Flags
 - Runs a comparison against the current cell
