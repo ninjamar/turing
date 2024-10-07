@@ -1,7 +1,9 @@
 # I adapted the inital version of this code from my scratch project (https://scratch.mit.edu/projects/1074402996/)
 
+
 def strip_code(code):
     return "".join([i for i in code if i in "><+-^|,.%*!$@[]()"])
+
 
 class Stack:
     def __init__(self):
@@ -27,7 +29,7 @@ class Machine:
             self.code = strip_code(code)
         else:
             self.code = code
-        
+
         self.cells = [0] * memsize
 
         self.stack = Stack()
@@ -42,11 +44,11 @@ class Machine:
     @property
     def curr_cell_v(self):
         return self.cells[self.curr_cell_idx]  # 0 indexed vs. 1 indexed
-    
+
     @curr_cell_v.setter
     def curr_cell_v(self, value):
         self.cells[self.curr_cell_idx] = value
-    
+
     @property
     def curr_instr(self):
         return self.code[self.pc]
