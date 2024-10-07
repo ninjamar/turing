@@ -3,6 +3,9 @@
 A bunch of cells that can be manipulated. [I wrote an interpreter for this in Scratch.](https://scratch.mit.edu/projects/1074402996/)
 
 # Syntax
+There is a tape that can be manipulated. Each program starts at cell 0.
+
+
 | Basic Instructions | Description |
 | ------------------ | ----------- |
 | `>` | Shift the current cell one to the right
@@ -50,6 +53,4 @@ A bunch of cells that can be manipulated. [I wrote an interpreter for this in Sc
 
 
 # Examples
-| Code | Description |
-| ---- | ----------- |
-| `++++++++++>++^<[$-]` | Print all the numbers from 10 to 1
+Some example are located in `examples/`

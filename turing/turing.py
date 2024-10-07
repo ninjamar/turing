@@ -28,20 +28,20 @@ class Machine:
 
         self.cells = [0] * memsize
 
-        self.curr_cell = 1
+        self.curr_cell_idx = 0
 
-        self.pc = 1
-
-    def replace_curr_cell(self, value):
-        self.cells[self.curr_cell - 1] = value
+        self.pc = 0
 
     @property
-    def v_curr_cell(self):
-        return self.cells[self.curr_cell - 1]  # 0 indexed vs. 1 indexed
+    def curr_cell_v(self):
+        return self.cells[self.curr_cell_idx]  # 0 indexed vs. 1 indexed
+
+    def replace_curr_cell(self, value):
+        self.cells[self.curr_cell_idx] = value
 
     @property
     def curr_instr(self):
-        return self.code[self.pc - 1]
+        return self.code[self.pc]
 
     def compare(self, flag, value):
         if flag == 1 and value == 0:
@@ -81,15 +81,15 @@ class Machine:
             while not end:
                 dist += 1
                 # Need shorthand for self.curr_instr
-                if self.code[self.pc - 1 + dist] == "[":
+                if self.code[self.pc + dist] == "[":
                     nested += 1
-                elif self.code[self.pc - 1 + dist] == "]" and nested > 0:
+                elif self.code[self.pc + dist] == "]" and nested > 0:
                     nested -= 1
-                elif self.code[self.pc - 1 + dist] == "]" and nested == 0:
+                elif self.code[self.pc + dist] == "]" and nested == 0:
                     end = True
 
             flag = self.stack.pop()
-            if self.compare(flag, self.v_curr_cell):
+            if self.compare(flag, self.curr_cell_v):
                 self.loops.append(flag)
                 self.loops.append(dist)
 
@@ -98,7 +98,7 @@ class Machine:
                 self.pc += dist + 1
 
         elif instr == "]":
-            if self.compare(self.loops[-2], self.v_curr_cell):
+            if self.compare(self.loops[-2], self.curr_cell_v):
                 # This is the part I'm confused about - I do +1 in scratch, but why -1 here
                 self.pc -= self.loops[-1] - 1
             else:
@@ -108,13 +108,13 @@ class Machine:
 
         elif instr == "@":
             old_pc = self.pc + 1
-            self.pc = 1
+            self.pc = 0
             false_cond = self.stack.pop()
             true_cond = self.stack.pop()
             flag = self.stack.pop()
 
             label_code = ""
-            if self.compare(flag, self.v_curr_cell):
+            if self.compare(flag, self.curr_cell_v):
                 label_code = self.labels[true_cond]
             else:
                 # don't do false if cond = -1
@@ -122,40 +122,40 @@ class Machine:
                     label_code = self.labels[false_cond]
 
             if label_code != "":
-                while self.pc <= len(label_code):
-                    # 0 indexed vs 1 indexed TODO: Maybe fix this
-                    self.exec_instr(label_code[self.pc - 1])
+                # Since pc is now zero indexed, it is < not <=
+                while self.pc < len(label_code):
+                    self.exec_instr(label_code[self.pc])
 
             self.pc = old_pc
 
         else:
             if instr == ">":
-                self.curr_cell += 1
+                self.curr_cell_idx += 1
             elif instr == "<":
-                self.curr_cell -= 1
+                self.curr_cell_idx -= 1
             elif instr == "%":
-                self.curr_cell = self.stack.pop()
+                self.curr_cell_idx = self.stack.pop()
             elif instr == "+":
-                self.replace_curr_cell(self.v_curr_cell + 1)
+                self.replace_curr_cell(self.curr_cell_v + 1)
             elif instr == "-":
-                self.replace_curr_cell(self.v_curr_cell - 1)
+                self.replace_curr_cell(self.curr_cell_v - 1)
             elif instr == "^":
-                self.stack.push(self.v_curr_cell)
+                self.stack.push(self.curr_cell_v)
             elif instr == "|":
                 self.replace_curr_cell(self.stack.pop())
             elif instr == ",":
-                self.replace_curr_cell(self.v_curr_cell - self.stack.pop())
+                self.replace_curr_cell(self.curr_cell_v - self.stack.pop())
             elif instr == ".":
-                self.replace_curr_cell(self.v_curr_cell + self.stack.pop())
+                self.replace_curr_cell(self.curr_cell_v + self.stack.pop())
             elif instr == "*":
                 self.stack.clear()
             elif instr == "!":
                 self.replace_curr_cell(0)
             elif instr == "$":
-                self.output.append(self.v_curr_cell)
+                self.output.append(self.curr_cell_v)
             self.pc += 1  # Normal control flow of PC
 
     def run(self):
-        while self.pc <= len(self.code):
-            # print(self.code[self.pc - 1])
+        # PC goes to len(self.code) - 1
+        while self.pc < len(self.code):
             self.exec_instr(self.curr_instr)
